@@ -25,16 +25,36 @@ const material = new THREE.MeshStandardMaterial({
 const earthMesh = new THREE.Mesh(geometry, material);
 earthGroup.add(earthMesh);
 
+const lightsMat = new THREE.MeshBasicMaterial({
+  map: loader.load("./textures/03_earthlights1k.jpg"),
+  blending: THREE.AdditiveBlending,
+})
+const lightsMesh = new THREE.Mesh(geometry, lightsMat);
+earthGroup.add(lightsMesh);
+
+const cloudsMat = new THREE.MeshBasicMaterial({
+  transparent: true,
+  opacity: 0.8,
+  map: loader.load("./textures/earthcloudmaptrans.jpg"),
+  blending: THREE.AdditiveBlending,
+});
+const cloudsMesh = new THREE.Mesh(geometry, cloudsMat);
+cloudsMesh.scale.setScalar(1.01);
+earthGroup.add(cloudsMesh);
+
 const stars = getStarfield({numStars: 1000});
 scene.add(stars);
 
-const light = new THREE.HemisphereLight( 0xffffff, 0x444444 );
-scene.add( light );
+const sunLight = new THREE.DirectionalLight(0xffffff);
+sunLight.position.set(-2, 0.5, 1.5);
+scene.add(sunLight);
 
 function animate() {
   requestAnimationFrame(animate);
 
   earthMesh.rotation.y += 0.002;
+  lightsMesh.rotation.y += 0.002;
+  cloudsMesh.rotation.y += 0.002;
   renderer.render(scene, camera);
 }
 
